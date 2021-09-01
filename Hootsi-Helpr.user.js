@@ -3,7 +3,7 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.6
+// @version      0.0.7
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
@@ -48,7 +48,8 @@ jQuery(function($){
             'Hootsi Helper &#129657;<br></div>';
         var crestron_copy_pasta ='<textarea cols="16" rows="2" id="crestron_pasta"'+
                                  'placeholder = "Paste Crestron serials here"></textarea><br>'+
-                                 '<input value="Clean Serials" id="cleanserials" type="button"></input>'+
+                                 '<input value="Clear" id="clear" type="button"></input> '+
+                                 '<input value="Clean" id="cleanserials" type="button"></input> '+
                                  '<input value="Fill" id="print" type="button"></input><br><br>';
         var sonos_check = '<label><input type="checkbox" id="sonos" value="true"> Sonos ?</label>';
 
