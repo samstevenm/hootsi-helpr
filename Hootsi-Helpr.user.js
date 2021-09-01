@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Hootsi-Helpr
-// @downloadURL  https://drive.google.com/uc?export=download&id=1R2N0JoPimmtR2_P2W57n-YPXL319i1Mp
-// @updateURL    https://drive.google.com/uc?export=download&id=1R2N0JoPimmtR2_P2W57n-YPXL319i1Mp
+// @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
+// @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.1
-// @description  Iprove Hootsi functionality!
+// @version      0.0.2
+// @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
-// @icon         https://www.google.com/s2/favicons?domain=stackoverflow.com
+// @icon         https://github.com/samstevenm/hootsi-helpr/raw/main/favico.png
 // @require      https://code.jquery.com/jquery-3.6.0.js
 // @require      https://code.jquery.com/ui/1.13.0-alpha.1/jquery-ui.min.js
 // @grant        none
