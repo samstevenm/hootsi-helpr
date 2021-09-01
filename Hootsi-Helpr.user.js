@@ -3,13 +3,13 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.4
+// @version      0.0.5
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
 // @icon         https://github.com/samstevenm/hootsi-helpr/raw/main/favico.png
-// @require      https://code.jquery.com/jquery-3.6.0.js
-// @require      https://code.jquery.com/ui/1.13.0-alpha.1/jquery-ui.min.js
+// @require      http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
+// @require      http://code.jquery.com/ui/1.9.2/jquery-ui.js
 // @grant        none
 // ==/UserScript==
 
@@ -17,7 +17,7 @@ jQuery(function($){
     $(document).ready(function($) {
         var _highest = 0;
 
-        localStorage.clear();
+        //localStorage.clear();
 
         //figure out which div is highest so widget stays on top
         $("div").each(function() {
@@ -29,12 +29,12 @@ jQuery(function($){
 
         //check if widget has been dragged before
         if (localStorage.getItem("ls_left") === null ){
-            var left = 0
+            var left = 0;
             } else {
                 var left = localStorage.getItem("ls_left")
                 }
         if (localStorage.getItem("ls_top") === null ){
-            var top = 0
+            var top = 0;
             } else {
                 var top = localStorage.getItem("ls_top")
                 }
@@ -42,30 +42,37 @@ jQuery(function($){
         var html =  '<div id="draggableDiv_links"'+ //class is stolen from SFDC
             'style="position:absolute;top:'+top+'px;left:'+left+'px;'+
             'z-index:'+_highest+';background:#FFF;border:1px solid #000000;'+
-            'border-radius:10px;height:150px;width:190px;'+
+            'border-radius:10px;height:190px;width:190px;'+
             'margin-left:auto;margin-right:auto;margin-top:3px;'+
             'margin-bottom:3px;text-align: center;">'+
             'Hootsi Helper &#129657;<br></div>';
         var crestron_copy_pasta ='<textarea cols="16" rows="2" id="crestron_pasta"'+
                                  'placeholder = "Paste Crestron serials here"></textarea><br>'+
-                                 '<input value="Fill Product" id="fillprod" type="button"></input><br>';
-        var sonos_check = '<label><input type="checkbox" id="sonos" value="true">Sonos ?</label>';
+                                 '<input value="Clean Serials" id="cleanserials" type="button"></input>'+
+                                 '<input value="Fill" id="print" type="button"></input><br><br>';
+        var sonos_check = '<label><input type="checkbox" id="sonos" value="true"> Sonos ?</label>';
 
-        //var cal_copypaste = '<input value="&#128197; -> &#10697;" id="copycal" type="button">'+
-            '<input value="&#128203; -> &#128222;" id="pastecal" type="button">';
-
-
+        //prepend the widget to the navigation area
         $("#navigation").prepend(html);
 
         $(crestron_copy_pasta).appendTo('#draggableDiv_links');
         $(sonos_check).appendTo('#draggableDiv_links');
-        //$(cal_copypaste).appendTo('#draggableDiv_links');
 
 
+        //make the widget draggable
+        $("#draggableDiv_links").draggable();
 
-        $("#draggableDiv_links").draggable(); //make it draggable
+        //give an ID of "mac" to the mac field
+        $("[name='mac']").prop("id","mac");
 
+        //give an ID of "serial" to the serial field
+        $("[name='serial']").prop("id","serial");
 
+        //give an ID of "sumbit_btn" to the serial field
+        $('button:contains("Receive Product")').prop("id","submit_btn");
+
+        var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
+        $("#crestron_pasta").val(ls_crestron_pasta);
 
         $('#draggableDiv_links').mouseup(function() {
             //alert('Set the x and y values using GM_getValue.');
@@ -85,14 +92,11 @@ jQuery(function($){
 
         });
 
-        $('#fillprod').click(function(e) {
-            //$("[name='serial']").val("Serial Number");
-            //$("[name='mac']").val("MAC Address");
-
+        $('#cleanserials').click(function(e) {
             localStorage.setItem("ls_crestron_pasta", "CRESTRON_PASTA_DID_NOT_SET"); // Store
             var crestron_pasta = $("#crestron_pasta").val();
             //clear the text box
-            $("#crestron_pasta").val("");
+            //$("#crestron_pasta").val("");
             //remove spaces
             var crestron_pasta = crestron_pasta.replace(/ /g, '');
             //remove commas ,
@@ -102,40 +106,80 @@ jQuery(function($){
             //replace open paren ( with ,
             var crestron_pasta = crestron_pasta.replace(/\(/g, ',');
 
+            //remove S/N:
             var crestron_pasta = crestron_pasta.replace(/S\/N:/g, "");
+            //remove MACADDR:
             var crestron_pasta = crestron_pasta.replace(/MACADDR:/g, "");
 
-            //replace close paren ) with line feed
-            var crestron_pasta = crestron_pasta.split('\)');
-            //split at line-feeds
-            //var crestron_pasta = crestron_pasta.split('\r\n');
+            //use close paren ) to split into array
+            var crestron_pasta = crestron_pasta.split("\)");
 
-            //var crestron_pasta = crestron_pasta.replace(/MACADDR:/, "");
-            localStorage.setItem("ls_crestron_pasta", crestron_pasta); // Store
-            var ls_crestron_pasta = localStorage.getItem("ls_crestron_pasta")
-            $("#crestron_pasta").val(ls_crestron_pasta);           
+            //remove the last item TODO find out why there's an extra item
+            crestron_pasta.length = (crestron_pasta.length - 1);
 
-            var i = crestron_pasta.length;
+            // Store the array in local storage as ls_crestron_pasta
+            localStorage.setItem("ls_crestron_pasta", JSON.stringify(crestron_pasta));
 
-            while (i--) {
-                var isGood=confirm (crestron_pasta[i].split(","));
-                if (isGood) {
-                    //$("#crestron_pasta").val().append(crestron_pasta[i].split("MACADDR:")[0] + crestron_pasta[i].split("MACADDR:")[1]);
-                    $("[name='serial']").val(crestron_pasta[i].split(",")[0]);
-                    $("[name='mac']").val(crestron_pasta[i].split(",")[1]);
-                   // $('button:contains("Receive Product")').click();
-                } else {
-                    break;
-                }
-                }
-
-
-            //let ls_crestron_pasta = crestron_pasta.split('S/N:');
-            //alert (ls_crestron_pasta[2]);
-            //localStorage.setItem("ls_crestron_pasta", ls_crestron_pasta); // Store
+            // Get the array from local storage as ls_crestron_pasta
+            var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
+            $("#crestron_pasta").val(ls_crestron_pasta);
 
             e.preventDefault();
         });
+
+         $('#print').click(function(e) {
+            var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
+            $("#crestron_pasta").val(ls_crestron_pasta);
+            var item = JSON.parse(localStorage.getItem("ls_crestron_pasta")).pop();
+            var isGood=confirm (item);
+            if (isGood) {
+                 $("#serial").val(item.split(",")[0]);
+                 $("#mac").val(item.split(",")[1]);
+                 ls_crestron_pasta.length = (ls_crestron_pasta.length - 1);
+                 localStorage.setItem("ls_crestron_pasta", JSON.stringify(ls_crestron_pasta)); // Store
+                 $("#crestron_pasta").val(ls_crestron_pasta);
+                 //$('button:contains("Receive Product")').click();
+             }
+            e.preventDefault();
+        });
+
+        $('#submit_btn').click(function(e) {
+            var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
+            $("#crestron_pasta").val(ls_crestron_pasta);
+            //e.preventDefault();
+        });
+
+        //do validation on the MAC field to ensure its a valid MAC address
+        $('#mac').blur(function(e) {
+            var orig_mac = $('#mac').val();
+            //alert( "Original MAC:" + orig_mac);
+            //remove all non-hex characters and make UPPER
+            var cleaned_mac = orig_mac.replace(/[^a-fA-F0-9\s]/gi, '').toUpperCase();
+            //shorten to 12 characters long
+            var trim_clean_mac = cleaned_mac.substring(0,12);
+            //alert( "Trim & Clean: " + trim_clean_mac);
+            //update the field to the new cleaned and trimmed MAC
+            $('#mac').val(trim_clean_mac);
+            e.preventDefault();
+        });
+
+        // When Sonos is checked, do some stuff
+
+
+        $('#serial').blur(function(e) {
+            var orig_serial = $('#serial').val();
+            //remove all non-hex characters and make UPPER
+            var cleaned_mac = orig_serial.replace(/[^a-fA-F0-9\s]/gi, '').toUpperCase();
+            //shorten to 12 characters long
+            var trim_clean_mac = cleaned_mac.substring(0,12);
+            //alert( "Trim & Clean: " + trim_clean_mac);
+            //update the field to the new cleaned and trimmed MAC
+            if ( $("#sonos").is(':checked') ) {
+                $('#mac').val(trim_clean_mac);
+            }
+            e.preventDefault();
+        });
+
 
 
 
