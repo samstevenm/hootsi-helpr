@@ -3,7 +3,7 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.5
+// @version      0.0.6
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
@@ -39,7 +39,7 @@ jQuery(function($){
                 var top = localStorage.getItem("ls_top")
                 }
 
-        var html =  '<div id="draggableDiv_links"'+ //class is stolen from SFDC
+        var html = '<div id="draggableDiv_links"'+
             'style="position:absolute;top:'+top+'px;left:'+left+'px;'+
             'z-index:'+_highest+';background:#FFF;border:1px solid #000000;'+
             'border-radius:10px;height:190px;width:190px;'+
@@ -55,41 +55,33 @@ jQuery(function($){
         //prepend the widget to the navigation area
         $("#navigation").prepend(html);
 
+        //append additional HTML to draggableDiv_links
         $(crestron_copy_pasta).appendTo('#draggableDiv_links');
         $(sonos_check).appendTo('#draggableDiv_links');
-
 
         //make the widget draggable
         $("#draggableDiv_links").draggable();
 
+        // assign some actual IDs
         //give an ID of "mac" to the mac field
         $("[name='mac']").prop("id","mac");
-
         //give an ID of "serial" to the serial field
         $("[name='serial']").prop("id","serial");
-
-        //give an ID of "sumbit_btn" to the serial field
-        $('button:contains("Receive Product")').prop("id","submit_btn");
+        //give an ID of "sub_btn" to the submit button
+        $('button:contains("Receive Product")').prop("id","sub_btn");
 
         var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
         $("#crestron_pasta").val(ls_crestron_pasta);
 
+        // save widget positions
         $('#draggableDiv_links').mouseup(function() {
-            //alert('Set the x and y values using GM_getValue.');
-            //localStorage.setItem("ls_divOffset", "DIVOFFSET_DID_NOT_SET"); // Initilize
-            //localStorage.setItem("ls_left", "LEFT_DID_NOT_SET"); // Initilize
-            //localStorage.setItem("ls_top", "TOP_DID_NOT_SET"); // Initilize
-
             var divOffset = $("#draggableDiv_links").offset();
             var left = divOffset.left;
             var top = divOffset.top;
             var bottom = divOffset.bottom;
 
-            localStorage.setItem("ls_left", left); // Initilize
-            localStorage.setItem("ls_top", top); // Initilize
-
-            //alert("Set left to " + left + " and top to " + top);
-
+            localStorage.setItem("ls_left", left);
+            localStorage.setItem("ls_top", top);
         });
 
         $('#cleanserials').click(function(e) {
@@ -97,6 +89,7 @@ jQuery(function($){
             var crestron_pasta = $("#crestron_pasta").val();
             //clear the text box
             //$("#crestron_pasta").val("");
+
             //remove spaces
             var crestron_pasta = crestron_pasta.replace(/ /g, '');
             //remove commas ,
@@ -105,12 +98,11 @@ jQuery(function($){
             var crestron_pasta = crestron_pasta.replace(/\r?\n|\r/g, '');
             //replace open paren ( with ,
             var crestron_pasta = crestron_pasta.replace(/\(/g, ',');
-
             //remove S/N:
             var crestron_pasta = crestron_pasta.replace(/S\/N:/g, "");
             //remove MACADDR:
             var crestron_pasta = crestron_pasta.replace(/MACADDR:/g, "");
-
+        
             //use close paren ) to split into array
             var crestron_pasta = crestron_pasta.split("\)");
 
@@ -122,6 +114,7 @@ jQuery(function($){
 
             // Get the array from local storage as ls_crestron_pasta
             var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
+            // Update the crestron_pasta textarea
             $("#crestron_pasta").val(ls_crestron_pasta);
 
             e.preventDefault();
@@ -132,14 +125,14 @@ jQuery(function($){
             $("#crestron_pasta").val(ls_crestron_pasta);
             var item = JSON.parse(localStorage.getItem("ls_crestron_pasta")).pop();
             var isGood=confirm (item);
-            if (isGood) {
+            //if (isGood) {
                  $("#serial").val(item.split(",")[0]);
                  $("#mac").val(item.split(",")[1]);
                  ls_crestron_pasta.length = (ls_crestron_pasta.length - 1);
                  localStorage.setItem("ls_crestron_pasta", JSON.stringify(ls_crestron_pasta)); // Store
                  $("#crestron_pasta").val(ls_crestron_pasta);
-                 //$('button:contains("Receive Product")').click();
-             }
+                 $('button:contains("Receive Product")').click();
+            // }
             e.preventDefault();
         });
 
@@ -164,8 +157,6 @@ jQuery(function($){
         });
 
         // When Sonos is checked, do some stuff
-
-
         $('#serial').blur(function(e) {
             var orig_serial = $('#serial').val();
             //remove all non-hex characters and make UPPER
@@ -179,9 +170,6 @@ jQuery(function($){
             }
             e.preventDefault();
         });
-
-
-
 
     });
 });
