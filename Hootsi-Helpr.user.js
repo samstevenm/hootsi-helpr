@@ -3,7 +3,7 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.8
+// @version      0.0.7
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
@@ -85,13 +85,6 @@ jQuery(function($){
             localStorage.setItem("ls_top", top);
         });
 
-        $('#clear').click(function(e) {
-            // clear ls_crestron_pasta
-            localStorage.setItem("ls_crestron_pasta", JSON.stringify(""));
-            $("#crestron_pasta").val(ls_crestron_pasta);
-            e.preventDefault();
-        });
-        
         $('#cleanserials').click(function(e) {
             localStorage.setItem("ls_crestron_pasta", "CRESTRON_PASTA_DID_NOT_SET"); // Store
             var crestron_pasta = $("#crestron_pasta").val();
