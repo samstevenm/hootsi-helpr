@@ -3,7 +3,7 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.7
+// @version      0.0.8
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
@@ -48,9 +48,9 @@ jQuery(function($){
             'Hootsi Helper &#129657;<br></div>';
         var crestron_copy_pasta ='<textarea cols="16" rows="2" id="crestron_pasta"'+
                                  'placeholder = "Paste Crestron serials here"></textarea><br>'+
-                                 '<input value="Clear" id="clear" type="button"></input> '+
-                                 '<input value="Clean" id="cleanserials" type="button"></input> '+
-                                 '<input value="Fill" id="print" type="button"></input><br><br>';
+                                 '<input value="&#128465;&#65039; Clear" id="clear" type="button"></input> '+
+                                 '<input value="&#129529; Clean" id="cleanserials" type="button"></input> '+
+                                 '<input value="Fill &#10145;&#65039;" id="print" type="button"></input><br><br>';
         var sonos_check = '<label><input type="checkbox" id="sonos" value="true"> Sonos ?</label>';
 
         //prepend the widget to the navigation area
@@ -85,6 +85,13 @@ jQuery(function($){
             localStorage.setItem("ls_top", top);
         });
 
+        $('#clear').click(function(e) {
+            // clear ls_crestron_pasta
+            localStorage.setItem("ls_crestron_pasta", JSON.stringify(""));
+            $("#crestron_pasta").val(ls_crestron_pasta);
+            e.preventDefault();
+        });
+        
         $('#cleanserials').click(function(e) {
             localStorage.setItem("ls_crestron_pasta", "CRESTRON_PASTA_DID_NOT_SET"); // Store
             var crestron_pasta = $("#crestron_pasta").val();
@@ -137,7 +144,7 @@ jQuery(function($){
             e.preventDefault();
         });
 
-        $('#submit_btn').click(function(e) {
+        $('#sub_btn').click(function(e) {
             var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
             $("#crestron_pasta").val(ls_crestron_pasta);
             //e.preventDefault();
