@@ -3,7 +3,7 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.6
+// @version      0.0.7
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
@@ -52,8 +52,8 @@ jQuery(function($){
                                  '<input value="Clear &#128465;&#65039;" id="clear" type="button"></input> '+
                                  '<input value="Serials &#129529;" id="cleanserials" type="button"></input> '+
                                  '<label><input type="checkbox" id="auto_rec" value="true"> Auto-Receive? </label>'+
-                                 '<input value="Fill &#10145;&#65039;" id="print" type="button"></input><br><br>';
-        var sonos_check = '<label><input type="checkbox" id="sonos" value="true">Sonos?</label>';
+                                 '<input value="Fill &#10145;&#65039;" id="fill" type="button"></input><br>';
+        var sonos_check = '<label><input type="checkbox" id="is_sonos" value="true">Sonos?</label>';
 
         //prepend the widget to the navigation area
         $("#navigation").prepend(html);
@@ -77,6 +77,13 @@ jQuery(function($){
         var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
         $("#crestron_pasta").val(ls_crestron_pasta);
 
+        var ls_auto_rec = JSON.parse(localStorage.getItem("ls_auto_rec"));
+        $("#auto_rec").attr("checked", ls_auto_rec);
+
+        var ls_is_sonos = JSON.parse(localStorage.getItem("ls_is_sonos"));
+        $("#is_sonos").attr("checked", ls_is_sonos);
+
+
         // save widget positions
         $('#draggableDiv_links').mouseup(function() {
             var divOffset = $("#draggableDiv_links").offset();
@@ -95,7 +102,30 @@ jQuery(function($){
             $("#crestron_pasta").val("");
             e.preventDefault();
         });
-
+        //save checkbox status in local storage
+        $('#auto_rec').click(function(e) {
+            if ( $("#auto_rec").is(':checked') ) {
+                localStorage.setItem("ls_auto_rec", true);
+                var ls_auto_rec = JSON.parse(localStorage.getItem("ls_auto_rec"));
+                alert ("ls_auto_rec: " + ls_auto_rec);
+            } else {
+                localStorage.setItem("ls_auto_rec", false);
+                var ls_auto_rec = JSON.parse(localStorage.getItem("ls_auto_rec"));
+                alert ("ls_auto_rec: " + ls_auto_rec);
+            }
+        });
+        //save checkbox status in local storage
+        $('#is_sonos').click(function(e) {
+            if ( $("#is_sonos").is(':checked') ) {
+                localStorage.setItem("ls_is_sonos", true);
+                var ls_is_sonos = JSON.parse(localStorage.getItem("ls_is_sonos"));
+                alert ("ls_is_sonos: " + ls_is_sonos);
+            } else {
+                localStorage.setItem("ls_is_sonos", false);
+                var ls_is_sonos = JSON.parse(localStorage.getItem("ls_is_sonos"));
+                alert ("ls_is_sonos: " + ls_is_sonos);
+            }
+        });
         $('#cleanserials').click(function(e) {
             localStorage.setItem("ls_crestron_pasta", "CRESTRON_PASTA_DID_NOT_SET"); // Store
             var crestron_pasta = $("#crestron_pasta").val();
@@ -132,7 +162,7 @@ jQuery(function($){
             e.preventDefault();
         });
 
-         $('#print').click(function(e) {
+         $('#fill').click(function(e) {
             var ls_crestron_pasta = JSON.parse(localStorage.getItem("ls_crestron_pasta"));
             $("#crestron_pasta").val(ls_crestron_pasta);
             var item = JSON.parse(localStorage.getItem("ls_crestron_pasta")).pop();
@@ -142,11 +172,10 @@ jQuery(function($){
                  ls_crestron_pasta.length = (ls_crestron_pasta.length - 1);
                  localStorage.setItem("ls_crestron_pasta", JSON.stringify(ls_crestron_pasta)); // Store
                  $("#crestron_pasta").val(ls_crestron_pasta);
-                 if ( $("#sonos").is(':checked') ) {
-                     var isGood=confirm (item);
-                     //$('button:contains("Receive Product")').click();
+                 if ( $("#auto_rec").is(':checked') ) {
+                     //var isGood=confirm (item);
+                     $('button:contains("Receive Product")').click();
                  }
-             //
             //}
             e.preventDefault();
         });
@@ -188,7 +217,7 @@ jQuery(function($){
             var trim_clean_mac = cleaned_mac.substring(0,12);
             //alert( "Trim & Clean: " + trim_clean_mac);
             //update the field to the new cleaned and trimmed MAC
-            if ( $("#sonos").is(':checked') ) {
+            if ( $("#is_sonos").is(':checked') ) {
                 $('#mac').val(trim_clean_mac);
             }
             e.preventDefault();
