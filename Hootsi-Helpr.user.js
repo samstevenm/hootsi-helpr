@@ -3,7 +3,7 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.8
+// @version      0.0.9
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
@@ -89,6 +89,12 @@ jQuery(function($){
         var ls_serials_only = JSON.parse(localStorage.getItem("ls_serials_only"));
         // set the checkbox to the value (TRUE||FALSE)
         $("#serials_only").attr("checked", ls_serials_only);
+
+        // get whatever is in local storage (TRUE||FALSE)
+        var ls_auto_rec = JSON.parse(localStorage.getItem("ls_auto_recv"));
+        // set the checkbox to the value (TRUE||FALSE)
+        $("#auto_rec").attr("checked", ls_auto_rec);
+
         // change placeholder based on whether we're doing serials only or serials & macs
         if ( ls_serials_only ) {
             $("#crestron_pasta").prop("placeholder","Paste Crestron Serials Here");
