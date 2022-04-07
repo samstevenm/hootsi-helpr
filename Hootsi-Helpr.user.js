@@ -52,7 +52,7 @@ jQuery(function($){
                                  '<label><input type="checkbox" id="serials_only" value="true"> Serials Only? </label><br>'+
                                  // the line below adds a clear button"
                                  //'<input value="Clear &#128465;&#65039;" id="btn_clear" type="button"></input> '+
-                                 '<input value="Crestron Clean &#x1F4E7; &#129529;" id="btn_clean_crestron" type="button"></input> '+
+                                 '<input value="*tron Clean &#x1F4E7; &#129529;" id="btn_clean_crestron" type="button"></input> '+
                                  '<label><input type="checkbox" id="auto_rec" value="true"> Auto-Receive? </label>'+
                                  '<input value="Fill &#10145;&#65039;" id="fill" type="button"></input><br>';
         var sonos_check = '<label><input type="checkbox" id="is_sonos" value="true">Sonos?</label>';
@@ -91,21 +91,19 @@ jQuery(function($){
         $("#serials_only").attr("checked", ls_serials_only);
 
         // get whatever is in local storage (TRUE||FALSE)
-        var ls_auto_rec = JSON.parse(localStorage.getItem("ls_auto_recv"));
+        var ls_auto_rec = JSON.parse(localStorage.getItem("ls_auto_rec"));
         // set the checkbox to the value (TRUE||FALSE)
         $("#auto_rec").attr("checked", ls_auto_rec);
 
         // change placeholder based on whether we're doing serials only or serials & macs
         if ( ls_serials_only ) {
-            $("#crestron_pasta").prop("placeholder","Paste Crestron Serials Here");
+            $("#crestron_pasta").prop("placeholder","Paste Crestron/Lutron Serials Here");
             //alert ("ls_serials_only: " + ls_serials_only);
         } else {
-            $("#crestron_pasta").prop("placeholder","Paste Crestron Serials & MACs Here");
+            $("#crestron_pasta").prop("placeholder","Paste Crestron/Lutron Serials & MACs Here");
             //alert ("ls_serials_only: " + ls_serials_only);
         }
 
-        var ls_is_sonos = JSON.parse(localStorage.getItem("ls_is_sonos"));
-        $("#is_sonos").attr("checked", ls_is_sonos);
 
 
         // save widget positions
