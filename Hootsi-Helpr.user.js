@@ -3,7 +3,7 @@
 // @downloadURL  https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @updateURL    https://github.com/samstevenm/hootsi-helpr/raw/main/Hootsi-Helpr.user.js
 // @namespace    http://tampermonkey.net/
-// @version      0.0.9
+// @version      0.0.10
 // @description  Improve Hootsi functionality!
 // @author       Sam Myers
 // @match        https://www.hootsi.com/*
@@ -268,6 +268,24 @@ jQuery(function($){
             //alert( "Trim & Clean: " + trim_clean_mac);
             //update the field to the new cleaned and trimmed MAC
             $('#mac').val(trim_clean_mac);
+            e.preventDefault();
+        });
+
+        //do validation on the Serial field to clear commas
+        // Sam changes for Al 2022-06-06
+        $('#serial').blur(function(e) {
+            var orig_serial = $('#serial').val();
+            //alert( "Untrimmed: " + orig_serial );
+            //if the serial has a comma in it
+            if (orig_serial.includes(',') ){
+            //split at the comma and only get the actual serial array[1]
+            var cleaned_serial = orig_serial.split(',')[1];
+            } else {
+                //if there is no comma, just use the whole serial
+                var cleaned_serial = orig_serial;
+            }
+            //update the field to the new cleaned and trimmed serial
+            $('#serial').val(cleaned_serial);
             e.preventDefault();
         });
 
